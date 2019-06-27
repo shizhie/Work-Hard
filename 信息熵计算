@@ -1,0 +1,63 @@
+import numpy as np
+import math
+a = [
+    [1,1,"yes"],
+    [1,1,"yes"],
+    [1,0,"yes"],
+    [0,1,"no"],
+    [0,1,"no"]
+]
+
+"""两种字典键的计数方式"""
+b = {}
+for featVec in a:
+    
+    currentLabel = featVec[-1]
+    b[currentLabel] = b.get(currentLabel,0)+1#如果字典中存在这个键，则给键重新赋值，如果不存在这个键，就设为0.（这么来看，计数从2开始0+1）
+print(b)
+
+
+b = {}
+for featVec in a:
+    
+    currentLabel = featVec[-1]
+    #print(featVec)
+    #print(currentLabel)
+    if currentLabel not in b.keys():
+        b[currentLabel] = 1
+    else:
+        b[currentLabel] +=1
+print(b)
+
+"""两种信息熵计算方式"""
+
+def calcShannonEnt1(dataSet):
+    numEnties = len(dataSet)#数据集总数量
+    labelCounts = {}#空字典用于对某一键的计数
+    for teatVec in dataSet:
+        currentLabel = teatVec[-1]
+        labelCounts[currentLabel] = labelCounts.get(currentLabel,0) + 1
+    shannonEnt = 0
+    for key in labelCounts:
+        prob = labelCounts[key]/numEnties
+        shannonEnt = - (prob*math.log(prob,2)) + shannonEnt
+    return shannonEnt
+
+
+
+def calcShannonEnt2(dataSet):
+    numEnties = len(dataSet)#数据集总数量
+    labelCounts = {}#空字典用于对某一键的计数
+    for teatVec in dataSet:
+        currentLabel = teatVec[-1]
+        labelCounts[currentLabel] = labelCounts.get(currentLabel,0) + 1
+    shannonEnt = 0
+    probYes = labelCounts["yes"]/numEnties
+    shannonYes = - (probYes * math.log(probYes,2))
+    probNo = labelCounts["no"]/numEnties
+    shannonNo = - (probNo * math.log(probNo,2))
+    shannonEnt = shannonYes + shannonNo
+    return     shannonYes,shannonNo,shannonEnt
+
+print(calcShannonEnt1(a))
+print(calcShannonEnt2(a))
