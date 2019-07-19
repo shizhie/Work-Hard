@@ -1,0 +1,659 @@
+Private Sub CommandButton1_Click()
+
+    Dim swApp As Object
+    Dim Part As Object
+    
+    v1 = TextBox1.Text
+    v2 = TextBox2.Text
+    v3 = TextBox3.Text
+    
+    
+    Set swApp = CreateObject("SldWorks.Application")
+    swApp.Visible (True)
+    Set Part = swApp.NewPart()
+    Set Part = swApp.ActiveDoc
+    Part.InsertSketch
+    'part.SketchRectangle 0, 0, 0, 0.1, 0.1, 0, 1
+    '建立一个长方体,用中心和长宽值.textbox1是长，textbox2是宽。
+    Part.SketchManager.CreateCenterRectangle 0, 0, 0, TextBox1.Text / 1000 / 2, TextBox2.Text / 1000 / 2, 0
+    
+    Part.FeatureExtrusion 1, 0, 1, 0, 0, TextBox3.Text / 1000, 0.02, 0, 0, 0, 0, 0.01745329251994, 0.01745329251994, 0, 0
+    
+    Part.SelectByID "前视", "PLANE", 0, 0, 0
+    'Part.InsertSketch
+    'Part.CreateCircle 0, 0, 0, 0.02, 0.07, 0
+    Part.ShowNamedView2 "*等轴测 ", 7
+    'Part.FeatureCut4 1, 0, 0, 0, 0, 0.02, 0.02, 0, 0, 0, 0, 0.01745329251994, 0.01745329251994, 0, 0, -1, 0
+    Part.ViewZoomtofit2
+    TextBox10.Text = v1 * v2 * v3
+End Sub
+
+Private Sub CommandButton10_Click()
+' ******************************************************************************
+Dim swApp As Object
+
+Dim Part As Object
+Dim boolstatus As Boolean
+Dim longstatus As Long, longwarnings As Long
+
+
+
+Set swApp = Application.SldWorks
+
+Set Part = swApp.ActiveDoc
+
+    Xn = TextBox33.Text
+    Yn = TextBox34.Text
+    Zn = TextBox35.Text
+    total_num = Xn * Yn * Zn
+    For num_b = 2 + total_num To 2 + total_num + total_num + 2
+
+    boolstatus = Part.Extension.SelectByID2("草图" & (num_b), "SKETCH", 0, 0, 0, False, 0, Nothing, 0)
+    'Part.ClearSelection2 True
+    Dim myFeature As Object
+    Set myFeature = Part.FeatureManager.FeatureCut4(True, False, False, 0, 0, TextBox37 / 1000, 0.01, False, False, False, False, 1.74532925199433E-02, 1.74532925199433E-02, False, False, False, False, False, True, True, True, True, False, 0, 0, False, False)
+    Part.SelectionManager.EnableContourSelection = False
+    Next num_b
+End Sub
+
+Private Sub CommandButton11_Click()
+' ******************************************************************************
+' C:\Users\Administrator\AppData\Local\Temp\swx6592\Macro1.swb - macro recorded on 07/17/19 by Administrator
+' ******************************************************************************
+Dim swApp As Object
+
+Dim Part As Object
+Dim boolstatus As Boolean
+Dim longstatus As Long, longwarnings As Long
+
+
+
+Set swApp = Application.SldWorks
+
+Set Part = swApp.ActiveDoc
+
+Size1 = TextBox31.Text
+Size2 = TextBox32.Text
+Size3 = TextBox37.Text
+
+K = TextBox30.Text
+
+Path = "C:\Users\Administrator\Desktop\物料试验体\" & "Size" & (Size1) & "x" & (Size2) & "x" & (Size3) & "_" & "K" & (K) & ".SLDPRT"
+Path = "C:\Users\Administrator\Desktop\物料试验体\" & "Size" & (Size1) & "x" & (Size2) & "x" & (Size3) & "_" & "K" & (K) & ".x_t"
+
+'longstatus = Part.SaveAs3("C:\Users\Administrator\Desktop\物料试验体\xcv_9_90.1.SLDPRT", 0, 2)
+
+' Save As
+longstatus = Part.SaveAs3(Path, 0, 2)
+End Sub
+
+
+
+Private Sub CommandButton7_Click()
+' ******************************************************************************
+Dim swApp As Object
+
+Dim Part As Object
+Dim boolstatus As Boolean
+Dim longstatus As Long, longwarnings As Long
+
+
+
+Set swApp = Application.SldWorks
+
+Set Part = swApp.ActiveDoc
+
+    Xn = TextBox33.Text 'X方向数量
+    Yn = TextBox34.Text 'Y方向数量
+    Zn = TextBox35.Text 'Z方向数量
+    total_num = Xn * Yn * Zn '方孔的总数量，草图的总数量
+    For num_b = 2 To total_num + 1 '循环草图的序号
+
+    boolstatus = Part.Extension.SelectByID2("草图" & (num_b), "SKETCH", 0, 0, 0, False, 0, Nothing, 0)
+    'Part.ClearSelection2 True
+    Dim myFeature As Object
+    
+    '拉伸切除形成方孔,
+    Set myFeature = Part.FeatureManager.FeatureCut4(True, False, False, 0, 0, TextBox37 / 1000, 0.01, False, False, False, False, 1.74532925199433E-02, 1.74532925199433E-02, False, False, False, False, False, True, True, True, True, False, 0, 0, False, False)
+    Part.SelectionManager.EnableContourSelection = False
+    Next num_b
+End Sub
+
+Private Sub CommandButton2_Click()
+    ' ******************************************************************************
+    ' C:\Users\Administrator\AppData\Local\Temp\swx7392\Macro1.swb - macro recorded on 07/12/19 by Administrator
+    ' ******************************************************************************
+    Dim swApp As Object
+    
+    Dim Part As Object
+    Dim boolstatus As Boolean
+    Dim longstatus As Long, longwarnings As Long
+    
+    Set swApp = Application.SldWorks
+    
+    Set Part = swApp.ActiveDoc
+    'Public Xn As interger
+    'Public Yn As interger
+    'Public Zn As interger
+    
+    Dim xSpace As Double
+    Dim ySpace As Double
+    Dim zSpace As Double
+    
+    Dim basic_caotu As Integer
+    
+    
+    
+                        
+    Dim b As Integer
+    Dim c As String
+    Dim d As String
+
+    
+    v1 = TextBox1.Text
+    v2 = TextBox2.Text
+    v3 = TextBox3.Text
+    v4 = TextBox4.Text
+    v5 = TextBox5.Text
+    v6 = TextBox6.Text
+    Xn = TextBox7.Text
+    Yn = TextBox8.Text
+    Zn = TextBox9.Text
+    basic_caotu = 2
+    
+    
+    xSpace = (v1 / 2 - v4) / (Xn - 1)
+    
+    ySpace = v2 / (Yn - 1)
+    
+    zSpace = v3 / (Zn - 1)
+    
+    For i = 1 To TextBox9.Text 'Z向
+    
+        boolstatus = Part.Extension.SelectByRay(2.76888559604913E-02, 3.11491573832541E-02, 0, -0.577381545199981, -0.577287712085548, -0.577381545199979, 1.09468629056533E-03, 2, True, 0, 0)
+        
+        Part.FeatureManager.InsertRefPlane 264, zSpace * (i - 1) / 1000, 0, 0, 0, 0
+    
+            For j = 1 To TextBox8.Text 'Y向
+        
+                For K = 1 To TextBox7.Text 'X向
+                    
+
+                    basic_mian = "基准面" & (4 + i - 1)
+                    boolstatus = Part.Extension.SelectByID2(basic_mian, "PLANE", 0, 0, 0, False, 0, Nothing, 0)
+                    Part.SketchManager.InsertSketch True
+                    Dim myModelView As Object
+                    Set myModelView = Part.ActiveView
+                    myModelView.FrameState = swWindowState_e.swWindowMaximized
+            
+                    Dim skSegment As Object
+                    Part.SketchManager.CreateArc (v4 + xSpace * (K - 1)) / 1000, (v5 - ySpace * (j - 1)) / 1000, 0#, _
+                    (v4 + xSpace * (K - 1)) / 1000, (v5 - ySpace * (j - 1) - v6) / 1000, 0#, _
+                    (v4 + xSpace * (K - 1)) / 1000, (v5 - ySpace * (j - 1) + v6) / 1000, 0#, 1
+                    
+                    Part.SketchManager.CreateLine (v4 + xSpace * (K - 1)) / 1000, ((v5 - v6) - ySpace * (j - 1)) / 1000 + 2 * v6 / 1000, 0#, _
+                    (v4 + xSpace * (K - 1)) / 1000, ((v5 - v6) - ySpace * (j - 1)) / 1000, 0#
+    
+            
+                    Part.SketchManager.InsertSketch True
+
+    
+    
+            Next K
+        
+        Next j
+    Next i
+    
+End Sub
+
+
+Private Sub CommandButton3_Click()
+' ******************************************************************************
+Dim swApp As Object
+
+Dim Part As Object
+Dim boolstatus As Boolean
+Dim longstatus As Long, longwarnings As Long
+
+
+
+Set swApp = Application.SldWorks
+
+Set Part = swApp.ActiveDoc
+
+    Xn = TextBox7.Text
+    Yn = TextBox8.Text
+    Zn = TextBox9.Text
+total_num = Xn * Yn * Zn
+For num_b = 2 To total_num + 1
+
+    boolstatus = Part.Extension.SelectByID2("草图" & (num_b), "SKETCH", 0, 0, 0, False, 0, Nothing, 0)
+    boolstatus = Part.Extension.SelectByID2("Line1@草图" & (num_b), "EXTSKETCHSEGMENT", 0, 5.41009573815927E-02, 0, True, 0, Nothing, 0)
+    Part.ClearSelection2 True
+    boolstatus = Part.Extension.SelectByID2("草图" & (num_b), "SKETCH", 0, 0, 0, False, 0, Nothing, 0)
+    boolstatus = Part.Extension.SelectByID2("Line1@草图" & (num_b), "EXTSKETCHSEGMENT", 0, 5.41009573815927E-02, 0, True, 16, Nothing, 0)
+    Dim myFeature As Object
+    Set myFeature = Part.FeatureManager.FeatureRevolve2(True, True, False, True, False, False, 0, 0, 6.2831853071796, 0, False, False, 0.01, 0.01, 0, 0, 0, True, True, True)
+    Part.SelectionManager.EnableContourSelection = False
+    Next num_b
+End Sub
+
+Private Sub CommandButton4_Click()
+    ' ******************************************************************************
+    ' C:\Users\Administrator\AppData\Local\Temp\swx7392\Macro1.swb - macro recorded on 07/12/19 by Administrator
+    ' ******************************************************************************
+    Dim swApp As Object
+    
+    Dim Part As Object
+    Dim boolstatus As Boolean
+    Dim longstatus As Long, longwarnings As Long
+    
+    Set swApp = Application.SldWorks
+    
+    Set Part = swApp.ActiveDoc
+    
+    
+    v19 = TextBox19.Text
+    v20 = TextBox20.Text
+    v21 = TextBox21.Text
+    
+    Xn_1 = TextBox19.Text
+    Yn_1 = TextBox20.Text
+    Zn_1 = TextBox21.Text
+    
+        For i = 1 To TextBox18.Text 'Z向
+    
+        Part.FeatureManager.InsertRefPlane 4, Zn_1 * (i - 1) / 1000, 0, 0, 0, 0
+    
+            For j = 1 To TextBox17.Text 'Y向
+        
+                For K = 1 To TextBox7.Text 'X向
+                    
+
+                    basic_mian = "基准面" & (4 + i - 1)
+                    boolstatus = Part.Extension.SelectByID2(basic_mian, "PLANE", 0, 0, 0, False, 0, Nothing, 0)
+                    Part.SketchManager.InsertSketch True
+                    Dim myModelView As Object
+                    Set myModelView = Part.ActiveView
+                    myModelView.FrameState = swWindowState_e.swWindowMaximized
+            
+                    Dim skSegment As Object
+                    Part.SketchManager.CreateArc (v4 + xSpace * (K - 1)) / 1000, (v5 - ySpace * (j - 1)) / 1000, 0#, _
+                    (v4 + xSpace * (K - 1)) / 1000, (v5 - ySpace * (j - 1) - v6) / 1000, 0#, _
+                    (v4 + xSpace * (K - 1)) / 1000, (v5 - ySpace * (j - 1) + v6) / 1000, 0#, 1
+                    
+                    Part.SketchManager.CreateLine (v4 + xSpace * (K - 1)) / 1000, ((v5 - v6) - ySpace * (j - 1)) / 1000 + 2 * v6 / 1000, 0#, _
+                    (v4 + xSpace * (K - 1)) / 1000, ((v5 - v6) - ySpace * (j - 1)) / 1000, 0#
+                    Part.SketchManager.InsertSketch True
+            Next K
+        Next j
+    Next i
+    
+    Part.FeatureManager.InsertRefPlane 4, 0, 0, 0, 0, 0
+    
+    
+    
+
+    Part.ClearSelection2 True
+
+End Sub
+
+Private Sub CommandButton6_Click()
+
+    ' ******************************************************************************
+    ' C:\Users\Administrator\AppData\Local\Temp\swx7392\Macro1.swb - macro recorded on 07/12/19 by Administrator
+    ' ******************************************************************************
+    Dim swApp As Object
+    
+    Dim Part As Object
+    Dim boolstatus As Boolean
+    Dim longstatus As Long, longwarnings As Long
+    
+    Set swApp = Application.SldWorks
+    
+    Set Part = swApp.ActiveDoc
+    
+    Dim xSpace_1 As Double
+    Dim ySpace_1 As Double
+    Dim zSpace_1 As Double
+    Dim basic_caotu As Integer
+
+    Dim v_4 As Double
+
+    
+    
+    
+    
+    
+    
+    v_1 = TextBox1.Text                                 '前表面的长
+    
+    v_2 = TextBox2.Text                                 '前表面的宽
+    
+    v_3 = TextBox36.Text                       'Z向终止面的尺寸，
+    
+    v_4 = textbox27.Text                                '前表面第一个方孔的定位起点的X坐标
+    
+    v_5 = TextBox28.Text - Distance_y.Text                          '前表面第一个方孔的定位起点的Y坐标
+    
+    v_6 = TextBox31.Text                                '方孔的边长
+    
+    v_7 = TextBox32.Text                                '方孔的边长
+    
+    v_8 = TextBox37.Text
+    
+    Xn_1 = TextBox33.Text                               'X向的孔数量
+    
+    Yn_1 = TextBox34.Text                               'Y向的孔数量
+    
+    Zn_1 = TextBox35.Text                               'Z向的孔数量
+    
+    xSpace_1 = (v_1 / 2 - v_4 - 2 * Distance_x.Text - v_6) / (Xn_1 - 1) 'X向的孔距（也是Z向建立基准面间距） = （前面的长/2-第一个孔的X坐标-1倍的边长-1倍到表现的距离）/(X向数量-1)
+    
+    ySpace_1 = (v_2 - 2 * Distance_y.Text - v_7) / (Yn_1 - 1)       'Y向的孔距 = （前面的宽-1倍的边长-2倍的到表面距离）/(Y向数量-1)
+    
+    zSpace_1 = (v_3 - 2 * Distance_z.Text - v_8) / (Zn_1 - 1)         'Z向的孔距 = (终止长度-1倍边长-1倍到表面的距离)/(Y向数量-1)
+    
+    For i = 1 To Zn_1                                   'Z向创建Zn_1个基准面
+    
+        Part.Extension.SelectByRay -3.57086202386654E-02, 0.033527159237849, 1.00000000001046E-02, -0.696570101006638, -0.621463787711742, -0.358570571779917, 1.31786755075277E-03, 2, True, 0, 0
+        
+        Part.FeatureManager.InsertRefPlane 264, (Distance_z.Text + zSpace_1 * (i - 1)) / 1000, 0, 0, 0, 0
+    
+        For j = 1 To Yn_1                               'Y向数量
+
+            For K = 1 To Xn_1                           'X向数量
+'
+                basic_mian = "基准面" & (4 + i - 1)     '将基准面标号，字符串和数字结合方法  string&（data）
+                
+                boolstatus = Part.Extension.SelectByID2(basic_mian, "PLANE", 0, 0, 0, False, 0, Nothing, 0) '循环按顺序选取基准面
+                
+                Part.SketchManager.InsertSketch True
+
+                Dim myModelView As Object
+
+                Set myModelView = Part.ActiveView
+
+                myModelView.FrameState = swWindowState_e.swWindowMaximized
+
+                Part.SketchManager.CreateCornerRectangle (v_4 + xSpace_1 * (K - 1)) / 1000, (v_5 - ySpace_1 * (j - 1)) / 1000, 0, _
+                ((v_6 + v_4) + xSpace_1 * (K - 1)) / 1000, (v_5 - v_7 - ySpace_1 * (j - 1)) / 1000, 0             '在每一个基准面上画图
+
+                Part.SketchManager.InsertSketch True
+
+            Next K
+
+        Next j
+    Next i
+        
+End Sub
+
+
+Private Sub CommandButton8_Click()
+
+    ' ******************************************************************************
+    ' C:\Users\Administrator\AppData\Local\Temp\swx7392\Macro1.swb - macro recorded on 07/12/19 by Administrator
+    ' ******************************************************************************
+    Dim swApp As Object
+    
+    Dim Part As Object
+    Dim boolstatus As Boolean
+    Dim longstatus As Long, longwarnings As Long
+    
+    Set swApp = Application.SldWorks
+    
+    Set Part = swApp.ActiveDoc
+
+    
+    
+    Dim xSpace_1 As Double
+    Dim ySpace_1 As Double
+    Dim zSpace_1 As Double
+    
+    Dim basic_caotu As Integer
+    
+    
+    
+                        
+    Dim b As Integer
+    Dim c As String
+    Dim d As String
+    
+    
+    v_1 = TextBox1.Text
+    
+    v_2 = TextBox2.Text
+    
+    v_3 = TextBox38.Text
+    
+    v_4 = textbox27.Text
+    
+    v_5 = TextBox28.Text
+    
+    v_6 = TextBox31.Text
+    
+    v_7 = TextBox32.Text
+    
+    Xn_1 = TextBox33.Text
+    
+    Yn_1 = TextBox34.Text
+    
+    Zn_1 = TextBox35.Text
+    
+    
+    xSpace_1 = (v_1 / 2 - v_4 - v_6) / (Xn_1 - 1)
+    
+    ySpace_1 = (v_2 - v_7) / (Yn_1 - 1)
+    
+    zSpace_1 = (v_3 - v_6) / (Zn_1 - 1)
+    
+    For i = 1 To TextBox35.Text 'Z向
+    
+        boolstatus = Part.Extension.SelectByRay(-4.37304116354653E-02, -1.78562462158993E-02, -0.499999999999943, -0.677186900136352, -0.271332282199182, 0.683956646959661, 6.34256306671197E-03, 2, False, 0, 0)
+        Part.FeatureManager.InsertRefPlane 264, zSpace_1 * (i - 1) / 1000, 0, 0, 0, 0
+
+    
+    
+        For j = 1 To TextBox34.Text 'Y向
+
+            For K = 1 To TextBox33.Text 'X向
+'
+                basic_mian = "基准面" & (4 + Zn_1 + i - 1)
+                boolstatus = Part.Extension.SelectByID2(basic_mian, "PLANE", 0, 0, 0, False, 0, Nothing, 0)
+                
+                Part.SketchManager.InsertSketch True
+
+                Dim myModelView As Object
+
+                Set myModelView = Part.ActiveView
+
+                myModelView.FrameState = swWindowState_e.swWindowMaximized
+
+                Part.SketchManager.CreateCornerRectangle (v_4 + xSpace_1 * (K - 1)) / 1000, (v_5 - ySpace_1 * (j - 1)) / 1000, 0, _
+                ((v4 + v_6) + xSpace_1 * (K - 1)) / 1000, (v_5 - v_7 - ySpace_1 * (j - 1)) / 1000, 0
+                
+                
+                '0, 150 / 1000 / 2, 0, 100 / 1000, (150 / 2 + 100) / 1000, 0
+                '
+                '0, 0, 0, 0.01, 0.01, 0
+'                TextBox27.Text / 1000, TextBox28.Text / 1000, 0, _
+'                TextBox31.Text / 1000 / 2, _
+'                TextBox32.Text / 1000 / 2, 0
+
+                'vSkLines = Part.SketchManager.CreateCornerRectangle((TextBox27.Text + xSpace_1 * (k - 1)) / 1000, (TextBox28.Text - ySpace_1 * (j - 1)) / 1000, 0, _
+                (TextBox27.Text + TextBox31.Text + xSpace_1 * (k - 1)) / 1000, (TextBox28.Text - TextBox32.Text - ySpace_1 * (j - 1)) / 1000, 0)
+
+                Part.SketchManager.InsertSketch True
+
+
+            Next K
+
+        Next j
+    Next i
+        
+
+
+End Sub
+
+
+Private Sub OptionButton1_Click()
+' ******************************************************************************
+' C:\Users\Administrator\AppData\Local\Temp\swx5584\Macro1.swb - macro recorded on 07/15/19 by Administrator
+' ******************************************************************************
+Dim swApp As Object
+
+Dim Part As Object
+Dim boolstatus As Boolean
+Dim longstatus As Long, longwarnings As Long
+
+
+Set swApp = Application.SldWorks
+
+Set Part = swApp.ActiveDoc
+
+boolstatus = Part.Extension.SelectByRay(-4.99999999999545E-02, 1.87271938628157E-02, -7.53920310367668E-02, 0.951799938545536, -0.306496778493066, 1.16876754782958E-02, 1.15437997856889E-03, 2, True, 0, 0)
+
+'TextBox12 = Str(TextBox3.Text) & "*" & Str(TextBox2.Text)
+
+End Sub
+
+Private Sub TextBox23_AfterUpdate()
+    K = TextBox23
+    V_model = TextBox10.Text
+    V_ball = TextBox22.Text
+    TextBox6.Text = (3 * K * V_model / 4 / V_ball / 3.1415926) ^ (1 / 3)
+End Sub
+
+Private Sub TextBox25_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
+    v1 = TextBox1.Text
+    v2 = TextBox2.Text
+    v3 = TextBox3.Text
+    v4 = TextBox4.Text
+    v5 = TextBox5.Text
+    v6 = TextBox6.Text
+    Xn = TextBox7.Text
+    Yn = TextBox8.Text
+    Zn = TextBox9.Text
+
+    xSpace = (v1 / 2 - v4) / (Xn - 1)
+    
+    ySpace = v2 / (Yn - 1)
+    
+    zSpace = v3 / (Zn - 1)
+
+TextBox25.Text = xSpace
+End Sub
+
+Private Sub TextBox30_Change()
+TextBox30.Text = Format(TextBox30.Text, "0.00")
+End Sub
+
+Private Sub TextBox31_Change()
+TextBox29.Text = TextBox35.Text * TextBox34.Text * TextBox33.Text * TextBox31.Text * TextBox32.Text * TextBox37.Text
+End Sub
+
+Private Sub TextBox33_Change()
+TextBox29.Text = TextBox35.Text * TextBox34.Text * TextBox33.Text * TextBox31.Text * TextBox32.Text * TextBox37.Text
+
+TextBox39.Text = (TextBox1.Text / 2 - textbox27.Text - Distance_x.Text - TextBox31.Text) / (TextBox33.Text - 1)
+
+End Sub
+
+Private Sub TextBox34_Change()
+TextBox29.Text = TextBox35.Text * TextBox34.Text * TextBox33.Text * TextBox31.Text * TextBox32.Text * TextBox37.Text
+
+TextBox41.Text = (TextBox2.Text - TextBox32 - 2 * Distance_y.Text) / (TextBox34.Text - 1)
+
+End Sub
+
+Private Sub TextBox35_AfterUpdate()
+
+TextBox43.Text = (TextBox36.Text - TextBox37 - 2 * Distance_z.Text) / (TextBox35.Text - 1)
+
+End Sub
+
+Private Sub TextBox35_Change()
+
+TextBox29.Text = TextBox35.Text * TextBox34.Text * TextBox33.Text * TextBox31.Text * TextBox32.Text * TextBox37.Text
+
+End Sub
+
+Private Sub TextBox7_AfterUpdate()
+    v1 = TextBox1.Text
+    v2 = TextBox2.Text
+    v3 = TextBox3.Text
+    v4 = TextBox4.Text
+    v5 = TextBox5.Text
+    v6 = TextBox6.Text
+    Xn = TextBox7.Text
+    Yn = TextBox8.Text
+    Zn = TextBox9.Text
+
+    xSpace = (v1 / 2 - v4) / (Xn - 1)
+    
+    ySpace = v2 / (Yn - 1)
+    
+    zSpace = v3 / (Zn - 1)
+
+    TextBox25.Text = xSpace
+
+    K = TextBox23
+    V_model = TextBox10.Text
+    V_ball = TextBox22.Text
+    TextBox6.Text = (3 * K * V_model / 4 / V_ball / 3.1415926) ^ (1 / 3)
+    
+    TextBox22.Text = ((1 / 4 * (Xn - 1) + 1 / 8) * 2 + (1 / 2 * (Xn - 1) + 1 / 4) * (Yn - 2)) * 2 _
+    + ((1 / 2 * (Xn - 1) + 1 / 4) * 2 + (1 * (Xn - 1) + 1 / 2) * (Yn - 2)) * (Zn - 2)
+End Sub
+
+
+
+
+Private Sub TextBox8_AfterUpdate()
+    v1 = TextBox1.Text
+    v2 = TextBox2.Text
+    v3 = TextBox3.Text
+    v4 = TextBox4.Text
+    v5 = TextBox5.Text
+    v6 = TextBox6.Text
+    Xn = TextBox7.Text
+    Yn = TextBox8.Text
+    Zn = TextBox9.Text
+
+    xSpace = (v1 / 2 - v4) / (Xn - 1)
+    
+    ySpace = v2 / (Yn - 1)
+    
+    zSpace = v3 / (Zn - 1)
+
+    TextBox26.Text = ySpace
+
+
+    TextBox22.Text = ((1 / 4 * (Xn - 1) + 1 / 8) * 2 + (1 / 2 * (Xn - 1) + 1 / 4) * (Yn - 2)) * 2 _
+    + ((1 / 2 * (Xn - 1) + 1 / 4) * 2 + (1 * (Xn - 1) + 1 / 2) * (Yn - 2)) * (Zn - 2)
+End Sub
+
+
+Private Sub TextBox9_AfterUpdate()
+    v1 = TextBox1.Text
+    v2 = TextBox2.Text
+    v3 = TextBox3.Text
+    v4 = TextBox4.Text
+    v5 = TextBox5.Text
+    v6 = TextBox6.Text
+    Xn = TextBox7.Text
+    Yn = TextBox8.Text
+    Zn = TextBox9.Text
+
+    xSpace = (v1 / 2 - v4) / (Xn - 1)
+    
+    ySpace = v2 / (Yn - 1)
+    
+    zSpace = v3 / (Zn - 1)
+
+    TextBox24.Text = zSpace
+    
+    TextBox22.Text = ((1 / 4 * (Xn - 1) + 1 / 8) * 2 + (1 / 2 * (Xn - 1) + 1 / 4) * (Yn - 2)) * 2 _
+    + ((1 / 2 * (Xn - 1) + 1 / 4) * 2 + (1 * (Xn - 1) + 1 / 2) * (Yn - 2)) * (Zn - 2)
+End Sub
+
