@@ -1,0 +1,43 @@
+def otsu(image):
+    rows, cols = image.shape
+    #计算图像的灰度直方图
+    grayHist = cv2.calcHist([image], [0], None, [256], [0, 256])
+    
+    #归一化直方图
+    normGrayHist = grayHist / (rows * cols)
+    
+    #计算零阶累积矩和一阶累积矩
+    zeroCumuMoment = np.zeros([256], np.float32)
+    oneCumuMoment = np.zeros([256], np.float32)
+    for i in range(256):
+        if i == 0:
+            zeroCumuMoment[i] = normGrayHist[i]
+            oneCumuMoment[i] = i * normGrayHist[i]
+        else:
+            zeroCumuMoment[i] = normGrayHist[i] + zeroCumuMoment[i - 1]
+            oneCumuMoment[i] = i * normGrayHist[i] + oneCumuMoment[i - 1]
+            
+    #计算类间方差
+    variance = np.zeros([256], np.float32)
+    for i in range(256):
+        
+        if zeroCumuMoment[i] == 0 or zeroCumuMoment[i] == 1:
+            variance[i] = 0   
+            
+        else:
+            variance[i] = math.pow(oneCumuMoment[255] * zeroCumuMoment[i] - oneCumuMoment[i], 2) / (zeroCumuMoment[i] * (1.0 - zeroCumuMoment[i]))
+
+            
+    #找到阈值
+    threshLoc = np.where(variance == np.max(variance))
+    thresh = threshLoc[0][0]
+    
+    #阈值处理
+    thresh, dst = cv2.threshold(image, thresh, 255, cv2.THRESH_BINARY)
+    return dst,thresh
+    
+    
+    image = cv2.imread(r"C:\Users\Administrator\Desktop\opencv\six\img8.jpg",0)
+
+#大津法API
+thresh, dst = cv2.threshold(image,0,255,cv2.THRESH_OTSU)
