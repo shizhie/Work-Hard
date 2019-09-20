@@ -1,0 +1,29 @@
+#自适应阈值适合用于光照不全面，图片有阴影的局部阈值分割。
+
+image = cv2.imread(r"C:\Users\Administrator\Desktop\opencv\six\image3.png",0)
+
+dst = cv2.adaptiveThreshold(image,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY,5,0.15)
+print(thresh)
+
+cv2.imshow("src",image)
+cv2.imshow("dst",dst)
+
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+
+
+#python源代码
+
+def adaptiveThresh(Img, winSize,ratio = 0.15):
+    #对图像进行平滑处理
+    Img_mean = cv2.boxFilter(Img, cv2.CV_32FC1, winSize)
+    
+    #原图像与平滑结果做差
+    Img_out = (1- ratio) * I_mean
+    
+    #
+    Img_out[Img_out>=0] = 255
+    Img_out[Img_out<0] = 0
+    Img_out = Img_out.astype(np.uint8)
+    return Img_out
