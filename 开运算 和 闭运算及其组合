@@ -1,0 +1,68 @@
+"""开运算 就是先腐蚀然后在膨胀。
+消除亮度较高的细小区域、在纤细点处分离物体，对于较大的物体，可以平滑边界。
+
+闭运算 就是先膨胀然后再腐蚀。
+消除白色物体内细小的黑色区域、也可以平滑边界。"""
+
+import cv2
+
+#开运算
+src = cv2.imread(r"D:\jupyter programe\opencv\seven\img1.jpg",0)
+thresh, dst = cv2.threshold(src,0,255,cv2.THRESH_OTSU)
+element = cv2.getStructuringElement(cv2.MORPH_RECT,(3, 3))
+dst_open = cv2.morphologyEx(dst,cv2.MORPH_OPEN,element,iterations = 11)
+
+cv2.imshow("src",src)
+cv2.imshow("dst",dst)
+cv2.imshow("dst_open",dst_open)
+
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+#闭运算
+src = cv2.imread(r"D:\jupyter programe\opencv\seven\close.jpg",0)
+thresh, dst = cv2.threshold(src,0,255,cv2.THRESH_OTSU)
+element = cv2.getStructuringElement(cv2.MORPH_RECT,(3, 3))
+dst_close = cv2.morphologyEx(dst,cv2.MORPH_CLOSE,element,iterations = 10)
+
+cv2.imshow("src",src)
+cv2.imshow("dst",dst)
+cv2.imshow("dst_close",dst_close)
+
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+#丁卯运算
+src = cv2.imread(r"D:\jupyter programe\opencv\seven\img1.jpg",0)
+thresh, dst = cv2.threshold(src,0,255,cv2.THRESH_OTSU)
+element = cv2.getStructuringElement(cv2.MORPH_RECT,(3, 3))
+dst_open = cv2.morphologyEx(dst,cv2.MORPH_OPEN,element,iterations = 10)
+top_hat = dst - dst_open
+cv2.imshow("src",src)
+cv2.imshow("dst",dst)
+cv2.imshow("dst_open",dst_open)
+cv2.imshow("top_hat",top_hat)
+
+
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+#底帽运算
+src = cv2.imread(r"D:\jupyter programe\opencv\seven\close.jpg",0)
+thresh, dst = cv2.threshold(src,0,255,cv2.THRESH_OTSU)
+element = cv2.getStructuringElement(cv2.MORPH_RECT,(3, 3))
+
+dst_close = cv2.morphologyEx(src,cv2.MORPH_CLOSE,element,iterations =10)
+
+bottom_hat = src - dst_close
+
+
+cv2.imshow("src",src)
+#cv2.imshow("dst",dst)
+cv2.imshow("dst_close",dst_close)
+cv2.imshow("bottom_hat ",-bottom_hat )
+
+
+
+cv2.waitKey(0)
+cv2.destroyAllWindows()
