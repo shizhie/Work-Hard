@@ -1,0 +1,49 @@
+def Prewitt(image, _boundary = "symm"):
+    
+    #垂直算子
+    Prewitt_x = np.array([[1,0,-1],[1,0,-1],[1,0,-1]],np.float32)
+
+    #水平算子
+    Prewitt_y = np.array([[1,1,1],[0,0,0],[-1,-1,-1]],np.float32)
+
+    #对图像进行垂直方向的卷积
+    image_same_x = scipy.signal.convolve2d(image, Prewitt_x, mode = "same", boundary = "symm")
+    
+    #对图像进行水平方向的卷积
+    image_same_y = scipy.signal.convolve2d(image, Prewitt_y, mode = "same", boundary = "symm")
+
+    #取绝对值
+    image_same_x = np.abs(image_same_x)
+    image_same_y = np.abs(image_same_y)
+
+    #截取
+    image_same_x[image_same_x>255] = 255 
+    image_same_y[image_same_y>255] = 255 
+
+    #转换数据类型
+    edge_x = image_same_x.astype(np.uint8)
+    edge_y = image_same_y.astype(np.uint8)
+
+    #衡量输出的边缘强度
+    edge = 0.5 *image_same_x + 0.5 *image_same_y
+    edge[edge>255] = 255 
+    edge = edge.astype(np.uint8)
+
+    return edge_x,edge_y,edge
+    ---------------------------------
+    
+    
+    
+    
+#读取图像
+image = cv2.imread(r"D:\jupyter notebook\OpenCV2\OpenCV\eight\img7.jpg",0)
+
+#Prewitt算子卷积
+edge_x,edge_y,edge = Prewitt(image)
+
+#展示图像
+cv2.imshow("edge_x",edge_x)
+cv2.imshow("edge_y",edge_y)
+cv2.imshow("edge",edge)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
