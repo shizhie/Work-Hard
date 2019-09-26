@@ -1,0 +1,74 @@
+def Roberts(image, _boundary = "fill", _fillvalue = 0):
+    
+    #图片的形状
+    H1, W1 = image.shape
+    
+    #定义卷积核1
+    filter_kenerl1 = np.array([[1, 0],[0, -1]], np.float32)
+    
+    #卷积核的形状
+    H2, W2 = filter_kenerl1.shape
+    
+    #卷积核的锚点
+    kr1 = 0
+    kc1 = 0
+    
+    #full卷积
+    image_full1 = scipy.signal.convolve2d(image, filter_kenerl1,mode = "full", boundary = _boundary, fillvalue = _fillvalue)
+    
+    #same卷积
+    image_same1 = image_full1[H2 - kr1 - 1: H1 + H2 - kr1 - 1, W2 - kc1 - 1: W1 + W2 - kc1 - 1]
+    
+    #取绝对值
+    image_same1 = np.abs(image_same1)
+    
+    #截断
+    image_same1[image_same1 > 255] = 255
+    
+    #转换数据类型
+    edge45 = image_same1.astype(np.uint8)
+    
+    #定义卷积核2
+    filter_kenerl2 = np.array([[0, 1],[-1, 0]], np.float32)
+    
+    #卷积核的锚点
+    kr2 = 0
+    kc2 = 1
+    
+    #full卷积
+    image_full2 = scipy.signal.convolve2d(image, filter_kenerl2,mode = "full", boundary = _boundary, fillvalue = _fillvalue)
+
+    #same卷积
+    image_same2 = image_full2[H2 - kr2 - 1: H1 + H2 - kr2 - 1, W2 - kc2 - 1: W1 + W2 - kc2 - 1]
+    
+    #取绝对值
+    image_same2 = np.abs(image_same2)
+    
+    #截断
+    image_same2[image_same2 > 255] = 255
+
+    #转换数据类型
+    edge135 = image_same2.astype(np.uint8)
+
+    #开平方和
+    edge = np.sqrt(np.power(image_same1,2), np.power(image_same2,2))
+    
+    #截断
+    edge = np.round(edge)
+    edge[edge>255] = 255
+    
+    #转化数据类型
+    edge = edge.astype(np.uint8)
+    
+    return edge
+    
+    
+    
+    -----------------------
+    
+image = cv2.imread(r"D:\jupyter programe\opencv\eight\img3.png",0)
+edge = Roberts(image, _boundary = "fill", _fillvalue = 0)
+
+cv2.imshow("edge", edge)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
