@@ -1,0 +1,19 @@
+img = cv2.imread(r"D:\jupyter notebook\OpenCV2\OpenCV\night\img3.jpg",0)
+img_gauss = cv2.GaussianBlur(img,(3,3),0.5)
+img_canny = cv2.Canny(img_gauss,50,200)
+cv2.imshow("img_gauss",img_gauss)
+cv2.imshow("img_canny",img_canny)
+
+
+contours, h  = cv2.findContours(img_canny, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+n = len(contours)
+contoursImg = []
+for i in range(n):
+    temp = np.zeros(img_canny.shape,np.uint8)
+    contoursImg.append(temp)
+    cv2.drawContours(contoursImg[i],contours,i,255,2)
+    cv2.imshow("contours-"+str(i),contoursImg[i])
+    
+
+cv2.waitKey(0)
+cv2.destroyAllWindows()   
