@@ -1,0 +1,222 @@
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+import sys
+#from scipy import signal
+
+#coding=utf-8
+img = cv2.imread(r"C:\Users\NKONE\Desktop\1111.jpg")
+
+gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+
+cv2.imshow("img", img)
+cv2.imshow("gray", gray)
+
+equal = cv2.equalizeHist(gray) #图片增强
+
+cv2.imshow("equal", equal)
+
+
+kernel = cv2.getGaussianKernel(5,1)
+print(kernel)
+Gauss = cv2.GaussianBlur(equal, (5,5), 0) #高斯平滑
+cv2.imshow("Gauss", Gauss)
+
+
+#Lap = cv2.Laplacian(equal,0,ksize = 1) #拉普拉斯锐化
+
+#cv2.imshow("Lap", Lap)
+
+
+#dst3 = cv2.GaussianBlur(dst2, (5,5), 0) #高斯模糊
+#cv2.imshow("dst3", dst3)
+
+
+
+t,thre = cv2.threshold(Gauss,0,255,cv2.THRESH_OTSU) # 阈值
+
+cv2.imshow("thre",thre)
+
+
+
+#
+#element = cv2.getStructuringElement(cv2.MORPH_CROSS,(3,3))
+#dilate = cv2.dilate(thre,element)
+#cv2.imshow("dilate",dilate)
+
+#element = cv2.getStructuringElement(cv2.MORPH_CROSS,(5,5))
+#dilate1 = cv2.dilate(thre,element,iterations = 3)
+#cv2.imshow("dilate1",dilate1)
+
+
+#erode = cv2.erode(dilate1,None, iterations=1)
+#cv2.imshow("erode",erode)
+
+element = cv2.getStructuringElement(cv2.MORPH_CROSS,(3,3))
+mor = cv2.morphologyEx(thre, cv2.MORPH_CLOSE,element,iterations = 4)
+cv2.imshow("mor",mor)
+
+
+
+#element = cv2.getStructuringElement(cv2.MORPH_CROSS,(3,3))
+#mor1 = cv2.morphologyEx(mor, cv2.MORPH_BLACKHAT,element,iterations = 1)
+#cv2.imshow("mor1",mor1)
+
+#erode = cv2.erode(dilate1,None, iterations=1)
+#cv2.imshow("erode",erode)
+
+#erode = cv2.erode(gray,None, iterations=1)
+#cv2.imshow("erode",erode)
+
+#plt.plot(histogram3)
+#plt.show()
+
+#erode_hsv = cv2.erode(dst1,None, iterations=2)
+#cv2.imshow("erode_hsv",erode_hsv)
+
+
+cv2.imwrite(r"C:\Users\NKONE\Desktop\333.png", thre)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+histogram1 = cv2.calcHist([gray],[0],None,[256],[0,255])
+
+plt.plot(histogram1)
+
+plt.savefig(r"C:\Users\NKONE\Desktop\222.png")
+plt.show()
+plt.figure( dpi=80)  # 图片长宽和清晰度
+plt.plot(histogram1)
+plt.show()
+import matplotlib.pyplot as plt
+from mpl_toolkits.axisartist.axislines import Subplot
+plt.figure(dpi=600)  # 图片长宽和清晰度
+
+plt.rcParams['xtick.direction'] = 'in'#将x周的刻度线方向设置向内
+plt.rcParams['ytick.direction'] = 'in'#将y轴的刻度方向设置向内
+
+plt.plot(histogram1)
+plt.xticks(fontproperties = 'Times New Roman', size=9) #x轴刻度字体大小
+plt.yticks(fontproperties = 'Times New Roman', fontsize=9) #y轴刻度字体大小
+
+
+plt.savefig(r"C:\Users\NKONE\Desktop\huiduzhifangtu.svg")
+plt.show()
+histogram2 = cv2.calcHist([equal],[0],None,[256],[0,255])
+cv2.imwrite(r"C:\Users\NKONE\Desktop\equal.png", equal)
+
+plt.figure(dpi=600)  # 图片长宽和清晰度
+plt.plot(histogram2)
+
+plt.rcParams['xtick.direction'] = 'in'#将x周的刻度线方向设置向内
+plt.rcParams['ytick.direction'] = 'in'#将y轴的刻度方向设置向内
+
+plt.xticks(fontproperties = 'Times New Roman', size=9) #x轴刻度字体大小
+plt.yticks(fontproperties = 'Times New Roman', fontsize=9) #y轴刻度字体大小
+
+plt.savefig(r"C:\Users\NKONE\Desktop\增强.svg")
+
+plt.show()
+cv2.imshow("equal", equal)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+mor1 = cv2.bitwise_not(mor)
+
+cv2.imwrite(r"C:\Users\NKONE\Desktop\mor1.png", mor1)
+cv2.imshow("mor1",mor1)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+# Roberts 算子
+kernelx = np.array([[-1, 0], [0, 1]], dtype=int)
+kernely = np.array([[0, -1], [1, 0]], dtype=int)
+
+x = cv2.filter2D(mor1, cv2.CV_16S, kernelx)
+y = cv2.filter2D(mor1, cv2.CV_16S, kernely)
+
+
+absX = cv2.convertScaleAbs(x)
+absY = cv2.convertScaleAbs(y)
+Roberts = cv2.addWeighted(absX, 0.5, absY, 0.5, 0)
+
+
+
+cv2.imshow("Roberts", Roberts)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+canny = cv2.Canny(mor1,2,3)
+
+cv2.imwrite(r"C:\Users\NKONE\Desktop\canny.png", canny)
+cv2.imshow("canny", canny)
+
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+cnts, hier = cv2.findContours(Roberts, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+img_cpoy = img.copy()
+
+#rect = cv2.minAreaRect(cnts)
+
+
+#box = cv2.boxPoints(cnts)
+
+cv2.drawContours(img_cpoy, cnts, -1, (0, 255, 255), 2)
+
+cv2.imshow("img1",img_cpoy)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+n = len(cnts)
+
+print("轮廓数量：", n)
+
+cntsImg = []
+
+cntLen = []
+
+img_cpoy1 = img.copy()
+mor1_copy = mor1.copy()
+
+for i in range(n):
+    
+    temp = np.zeros(img.shape,np.uint8)
+    
+    cntsImg.append(temp)
+    
+    rect = cv2.minAreaRect(cnts[i])
+    
+    #print("rect:\n",rect)
+    
+    points = cv2.boxPoints(rect)
+    
+    #print("points:\n",points)
+    
+    points = np.int0(points)
+    
+    cntsImg[i] = cv2.drawContours(cntsImg[i], [points] , 0 , (0,255,255), 2)
+    
+    #cv2.imshow("cnts["+str(i)+"]", cntsImg[i])
+    
+    #print("cnts["+str(i)+"]面积 = " , cv2.contourArea(cnts[i]))    
+
+    
+    cntLen.append(cv2.arcLength(cnts[i], True))
+    
+    #print("cnts["+str(i)+"周长积 = " , cntLen[i])   
+    
+    if cv2.contourArea(cnts[i]) > 2000:
+        
+        cv2.drawContours(img_cpoy1, [points], -1, (0,255,255), 2)
+        #cv2.drawContours(mor1_copy, [points], -1, (255,0,255), 10)
+        cv2.circle(img_cpoy1, (np.int0(rect[0][0]), np.int0(rect[0][1])), 1, (0,255,255), 2)    
+        #print(cnts)
+        print("cnts["+str(i)+"]面积 = " , cv2.contourArea(cnts[i]))    
+        print("rect:\n",rect)
+        #print(points)
+        print("------")
+        
+        
+cv2.imwrite(r"C:\Users\NKONE\Desktop\img_cpoy1.png", img_cpoy1)
+  
+cv2.imshow("轮廓", img_cpoy1)   
+
+cv2.waitKey(0)
+cv2.destroyAllWindows()   
