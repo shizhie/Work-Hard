@@ -1,0 +1,95 @@
+### import numpy as np
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.optimize import leastsq
+import pylab as pl
+from pylab import mpl
+
+#读取图像
+img = cv2.imread(r"C:\Users\NKONE\Desktop\123-1.tiff")
+gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+gray[gray<255] = 0
+
+img_2 = gray
+cv2.imwrite(r"C:\Users\NKONE\Desktop\img_2.tiff", img_2)
+
+#二值图像运算——取反
+mor1 = cv2.bitwise_not(img_2)
+
+#提取边缘
+Canny = cv2.Canny(mor1,2,3)
+cv2.imwrite(r"C:\Users\NKONE\Desktop\Canny.tiff", Canny)
+
+#图片的信息
+h = Canny.shape[0]
+w = Canny.shape[1]
+#print("图片的宽度w=%s"%(w), "图片高度h=%s"%(h),)
+
+#输出以为灰度值为255时的坐标!
+yx= np.argwhere(Canny==255)
+#print("(y,x)=%s"%(yx))
+
+#将图片坐标变换为坐标系坐标，x不变，Y方向变成高度方向的相反数。
+x = yx[:,1]
+y = h-yx[:,0]
+
+#mpl.rcParams['font.sans-serif'] = ['KaiTi']  # 解决中文乱码
+#mpl.rcParams['axes.unicode_minus'] = False   # 解决负号显示为方框的问题
+
+
+plt.rcParams['xtick.direction'] = 'in'#将x周的刻度线方向设置向内
+plt.rcParams['ytick.direction'] = 'in'#将y轴的刻度方向设置向内
+
+plt.rcParams['font.sans-serif']=['SimHei'] #用来正常显示中文标签
+plt.rcParams['axes.unicode_minus']=False #用来正常显示负号
+
+from scipy.optimize import curve_fit
+
+def func(x, k, b):
+    
+    return k*x + b
+
+#得到参数
+popt, pcov = curve_fit(func, x, y)
+
+k = popt[0]
+b = popt[1]
+
+print(popt)
+print("拟合之后的直线m=k*x+b="+"%s*x+%s"%(popt[0],popt[1]))
+
+
+
+plt.figure(dpi=600)  # 图片长宽和清晰度
+
+plt.rcParams['xtick.direction'] = 'in'#将x周的刻度线方向设置向内
+plt.rcParams['ytick.direction'] = 'in'#将y轴的刻度方向设置向内
+
+
+plt.xticks(fontproperties = 'Times New Roman', size=12) #x轴刻度字体大小
+plt.yticks(fontproperties = 'Times New Roman', fontsize=12) #y轴刻度字体大小
+
+plt.xlim((0,400))
+plt.ylim((0,300))
+
+temp_x=np.loadtxt(r"C:\Users\NKONE\Desktop\x.csv",delimiter=',')
+temp_y=np.loadtxt(r"C:\Users\NKONE\Desktop\ccc.csv",delimiter=',')
+temp_y = h-temp_y
+
+plt.plot(temp_x,temp_y,label='堆积轮廓线')
+plt.plot(x, func(x, popt[0], popt[1]), 'r-',label='轮廓拟合直线')
+plt.legend()
+
+ax = plt.axes()
+
+ax.spines['right'].set_visible(False)
+ax.spines['top'].set_visible(False)
+
+
+plt.savefig(r"C:\Users\NKONE\Desktop\111111111111111.png")
+plt.show()
+
+
+import math
+a = math.atan(k)*180/3.14
